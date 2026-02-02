@@ -12,4 +12,10 @@ export class AuthController {
     {
         return this.AuthService.registerUser(DTO);
     }
+
+    @Post('login')
+    login(@Body() DTO: CreateUserDto)
+    {
+        return this.AuthService.loginUser(DTO);
+    }
 }

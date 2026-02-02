@@ -14,7 +14,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     const adapter = new PrismaPg(pool);
     super({ adapter });
 
-    console.log(process.env.DATABASE_URL);
     const AuthDB:PrismaClient = new PrismaClient({ adapter });
   }
 

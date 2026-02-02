@@ -14,6 +14,8 @@ export class AuthService {
 
     constructor(private readonly prisma: PrismaService) {}
 
+    // register user
+
     async checkExistingEmail(email: string): Promise<void> {
 
         const user = await this.prisma.user.findUnique({
@@ -25,9 +27,9 @@ export class AuthService {
         }
     }
 
-    async hashPassword(password: string): Promise<string>
+    hashPassword(password: string): Promise<string>
     {
-            return await argon2.hash(password);
+            return  argon2.hash(password);
     }
 
     async saveNewUser(userData: Prisma.UserCreateInput) {
@@ -61,4 +63,29 @@ export class AuthService {
         };
         return this.saveNewUser(newUserData);
     }
+
+    // login user
+    async loginUser(dto: CreateUserDto)
+    {
+        const user  = await this.prisma.user.findUnique({
+            where: { email: dto.email},
+            select: {passwordHash:true}
+        });
+        if (!user)
+        {
+            throw new BadRequestException('Invalid email or password');
+        }
+
+        const storedPassword:string = user.passwordHash;
+        const ismatch:boolean =  await argon2.verify(storedPassword, dto.password);
+
+        if (ismatch)
+            console.log("PASSWORD MATCH !!!!!!!");
+        else
+            throw new BadRequestException('Invalid email or password');
+    }
+
+
+    // logout user
+
 }
