@@ -8,11 +8,13 @@ import {
     Injectable,
     InternalServerErrorException
     } from '@nestjs/common';
+import {JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
 
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(private readonly prisma: PrismaService,
+        private readonly jwt : JwtService) {}
 
     // register user
 
@@ -65,11 +67,11 @@ export class AuthService {
     }
 
     // login user
-    async loginUser(dto: CreateUserDto)
+    async loginUser(dto: CreateUserDto) 
     {
         const user  = await this.prisma.user.findUnique({
             where: { email: dto.email},
-            select: {passwordHash:true}
+            select: {passwordHash:true, id:true, email:true}
         });
         if (!user)
         {
@@ -80,12 +82,13 @@ export class AuthService {
         const ismatch:boolean =  await argon2.verify(storedPassword, dto.password);
 
         if (ismatch)
-            console.log("PASSWORD MATCH !!!!!!!");
+        {
+            const payload = {sub: user.id, email: user.email};
+            const accesstocken = await this.jwt.signAsync(payload);
+            return accesstocken;
+        }
         else
             throw new BadRequestException('Invalid email or password');
     }
-
-
     // logout user
-
 }
