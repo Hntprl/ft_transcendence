@@ -34,13 +34,13 @@ export class AuthController {
     @Get('me')
     me(@Req() req: Request)
     {
-        return req.user; // { id: ... }
+        return req.user;
     }
 
     @UseGuards(JwtAuthGuard)
     @Post('logout')
     logout(@Req() req: Request, @Res({ passthrough: true }) res: Response)
     {
-        return this.authService.logout((req.user as any).id, res);
+        return this.authService.logout(req.user!.id, res);
     }
 }

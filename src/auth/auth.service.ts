@@ -113,7 +113,7 @@ async createTokens(id: number , res: Response)
 		{
 			secret: this.cfg.get<string>('JWT_ACCESS_SECRET'),
 			expiresIn: this.cfg.get<string>('JWT_ACCESS_EXPIRES') || '15m',
-		},
+		} as any,
   	);
 
   	const refreshToken = await this.jwt.signAsync(
@@ -121,7 +121,7 @@ async createTokens(id: number , res: Response)
 		{
 	  		secret: this.cfg.get<string>('JWT_REFRESH_SECRET'),
 	  		expiresIn: this.cfg.get<string>('JWT_REFRESH_EXPIRES') || '7d',
-		},
+		} as any,
   	);
 
 	res.cookie('refreshToken', refreshToken,

@@ -1,8 +1,12 @@
+-- CreateSchema
+CREATE SCHEMA IF NOT EXISTS "auth";
+
 -- CreateTable
-CREATE TABLE "User" (
+CREATE TABLE "auth"."User" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
     "passwordHash" TEXT NOT NULL,
+    "refreshTokenHash" TEXT,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
     "avatarUrl" TEXT,
@@ -17,4 +21,4 @@ CREATE TABLE "User" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+CREATE UNIQUE INDEX "User_email_key" ON "auth"."User"("email");
