@@ -6,9 +6,10 @@ export interface LoginDto {
 export interface RegisterDto {
   email: string;
   password: string;
-  name: string;
+  firstname: string;
+  lastname: string;
 }
 
 export interface AuthResponse {
-  access_token: string;
+  accessToken: string;
 }
