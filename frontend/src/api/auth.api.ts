@@ -1,5 +1,5 @@
-import { apiClient } from "@/shared/api/client";
-import type { LoginDto, RegisterDto, AuthResponse } from "../types/auth.types.ts";
+import { apiClient } from "./client";
+import type { LoginDto, RegisterDto, AuthResponse, User } from "../types/auth.types.ts";
 
 const storeAccessToken = (token?: string) => {
   if (!token) return;
@@ -7,7 +7,9 @@ const storeAccessToken = (token?: string) => {
 };
 
 export const loginApi = async (data: LoginDto) => {
+  console.log("Attempting login with data:", data);
   const res = await apiClient.post<AuthResponse>("/auth/login", data);
+  console.log("Login response:", res.data);
   const token = (res.data as any).accessToken ?? (res.data as any).access_token;
   storeAccessToken(token);
   return res.data;
@@ -30,4 +32,9 @@ export const refreshApi = async () => {
 export const logoutApi = async () => {
   await apiClient.post("/auth/logout");
   localStorage.removeItem("access_token");
+};
+
+export const getMeApi = async (): Promise<User> => {
+  const res = await apiClient.get<User>("/auth/me");
+  return res.data;
 };
