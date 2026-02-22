@@ -17,10 +17,11 @@ export declare class AuthController {
     refresh(req: Request, res: Response): Promise<{
         accessToken: string;
     }>;
-    me(req: Request): {
-        id: number;
-        email: string;
-    } | undefined;
+    googlelogin(): Promise<void>;
+    googlecallback(req: Request, res: Response): Promise<{
+        accessToken: string;
+    }>;
+    me(req: Request): Express.User | undefined;
     logout(req: Request, res: Response): Promise<{
         ok: boolean;
     }>;

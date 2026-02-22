@@ -36,4 +36,10 @@ export declare class AuthService {
     logout(id: number, res: Response): Promise<{
         ok: boolean;
     }>;
+    validateUserByGoogle(googleUser: any): Promise<{
+        id: number;
+        email: string;
+        firstName: string;
+        lastName: string;
+    }>;
 }

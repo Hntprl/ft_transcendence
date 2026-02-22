@@ -4,6 +4,7 @@ import { CreateUserDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { GoogleAuthGuard } from './google-guards/google-guards.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -30,6 +31,20 @@ export class AuthController {
         return this.authService.refresh(refreshToken, res);
     }
 
+    @UseGuards(GoogleAuthGuard)
+     @Get('google/login')
+    async googlelogin() {
+        // This route will be handled by the GoogleStrategy
+    }
+
+    @UseGuards(GoogleAuthGuard)
+     @Get('google/callback')
+    async googlecallback(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+        console.log('Google callback hit, user:', req.user);
+        const response = await this.login(req.user as any, res);
+        return response;
+    }
+
     @UseGuards(JwtAuthGuard)
     @Get('me')
     me(@Req() req: Request)
@@ -41,6 +56,6 @@ export class AuthController {
     @Post('logout')
     logout(@Req() req: Request, @Res({ passthrough: true }) res: Response)
     {
-        return this.authService.logout(req.user!.id, res);
+        return this.authService.logout((req.user as any).id, res);
     }
 }

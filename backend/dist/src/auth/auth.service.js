@@ -58,6 +58,9 @@ let AuthService = class AuthService {
         this.cfg = cfg;
     }
     hashPassword(password) {
+        if (!password) {
+            return Promise.resolve('GOOGLE_AUTH');
+        }
         return argon2.hash(password);
     }
     async saveNewUser(userData) {
@@ -150,7 +153,14 @@ let AuthService = class AuthService {
             throw new common_1.UnauthorizedException('Invalid credentials');
         }
         const storedPassword = user.passwordHash;
-        const ismatch = await argon2.verify(storedPassword, dto.password);
+        console.log('Stored password hash:', storedPassword);
+        let ismatch;
+        if (dto.password) {
+            ismatch = await argon2.verify(storedPassword, dto.password);
+        }
+        else {
+            ismatch = true;
+        }
         if (ismatch) {
             return await this.createTokens(user.id, res);
         }
@@ -164,6 +174,21 @@ let AuthService = class AuthService {
         });
         res.clearCookie('refreshToken', { path: '/auth/refresh' });
         return { ok: true };
+    }
+    async validateUserByGoogle(googleUser) {
+        const user = await this.prisma.user.findUnique({
+            where: { email: googleUser.emails[0].value },
+            select: { id: true, email: true, firstName: true, lastName: true },
+        });
+        if (user)
+            return user;
+        const newUserData = {
+            email: googleUser.emails[0].value,
+            firstName: googleUser.name?.givenName || '',
+            lastName: googleUser.name?.familyName || '',
+            passwordHash: 'GOOGLE_AUTH',
+        };
+        return this.saveNewUser(newUserData);
     }
 };
 exports.AuthService = AuthService;

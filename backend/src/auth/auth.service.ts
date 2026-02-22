@@ -25,6 +25,10 @@ export class AuthService {
 
 	hashPassword(password: string): Promise<string>
 	{
+			if (!password)
+			{
+				return Promise.resolve('GOOGLE_AUTH');
+			}
 			return  argon2.hash(password);
 	}
 
@@ -156,7 +160,13 @@ async createTokens(id: number , res: Response)
 			throw new UnauthorizedException('Invalid credentials');
 		}
 		const storedPassword:string = user.passwordHash;
-		const ismatch:boolean =  await argon2.verify(storedPassword, dto.password);
+		console.log('Stored password hash:', storedPassword);
+		let ismatch:boolean;
+		if (dto.password){
+			ismatch =  await argon2.verify(storedPassword, dto.password);
+		}else{
+			ismatch = true;
+		}
 		if (ismatch)
 		{
 			return await this.createTokens(user.id, res);
@@ -176,4 +186,26 @@ async createTokens(id: number , res: Response)
 		res.clearCookie('refreshToken', { path: '/auth/refresh' });
 		return { ok: true };
 	}
+	
+	async validateUserByGoogle(googleUser: any)
+	{
+		const user = await this.prisma.user.findUnique({
+		where: { email: googleUser.emails[0].value },
+		select: { id: true, email: true, firstName: true, lastName: true },
+		});
+
+		if (user) return user;
+
+		const newUserData: Prisma.UserCreateInput = {
+		email: googleUser.emails[0].value,
+		firstName: googleUser.name?.givenName || '',
+		lastName: googleUser.name?.familyName || '',
+		passwordHash: 'GOOGLE_AUTH',
+		};
+		return this.saveNewUser(newUserData);
+  }
 }
+
+ 
+
+

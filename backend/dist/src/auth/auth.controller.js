@@ -18,6 +18,7 @@ const register_dto_1 = require("./dto/register.dto");
 const login_dto_1 = require("./dto/login.dto");
 const auth_service_1 = require("./auth.service");
 const jwt_auth_guard_1 = require("./jwt-auth.guard");
+const google_guards_guard_1 = require("./google-guards/google-guards.guard");
 let AuthController = class AuthController {
     authService;
     constructor(authService) {
@@ -34,6 +35,13 @@ let AuthController = class AuthController {
         if (!refreshToken)
             throw new common_1.UnauthorizedException('Missing refresh token');
         return this.authService.refresh(refreshToken, res);
+    }
+    async googlelogin() {
+    }
+    async googlecallback(req, res) {
+        console.log('Google callback hit, user:', req.user);
+        const response = await this.login(req.user, res);
+        return response;
     }
     me(req) {
         return req.user;
@@ -66,6 +74,22 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "refresh", null);
+__decorate([
+    (0, common_1.UseGuards)(google_guards_guard_1.GoogleAuthGuard),
+    (0, common_1.Get)('google/login'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "googlelogin", null);
+__decorate([
+    (0, common_1.UseGuards)(google_guards_guard_1.GoogleAuthGuard),
+    (0, common_1.Get)('google/callback'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)({ passthrough: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "googlecallback", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('me'),
