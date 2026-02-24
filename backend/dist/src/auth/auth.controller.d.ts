@@ -18,9 +18,7 @@ export declare class AuthController {
         accessToken: string;
     }>;
     googlelogin(): Promise<void>;
-    googlecallback(req: Request, res: Response): Promise<{
-        accessToken: string;
-    }>;
+    googlecallback(req: Request, res: Response): Promise<void>;
     me(req: Request): Express.User | undefined;
     logout(req: Request, res: Response): Promise<{
         ok: boolean;

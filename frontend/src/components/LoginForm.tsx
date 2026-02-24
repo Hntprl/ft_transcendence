@@ -69,6 +69,10 @@ export const LoginForm = () => {
 
         <button
           type="button"
+          // onClick={() =>
+          //   {
+          //     window.location.href = 'http://localhost:3000/auth/google';
+          //   }}
           className="w-full bg-white text-gray-800 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors mb-4"
         >
           Sign in with Google

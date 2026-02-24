@@ -15,6 +15,13 @@ export const loginApi = async (data: LoginDto) => {
   return res.data;
 };
 
+export const loginWithGoogleApi = async (token: string) => {
+  const res = await apiClient.post<AuthResponse>("/auth/google", { token });
+  const accessToken = (res.data as any).accessToken ?? (res.data as any).access_token;
+  storeAccessToken(accessToken);
+  return res.data;
+}
+
 export const registerApi = async (data: RegisterDto) => {
   // Register then immediately log in to obtain tokens (backend currently returns the created user)
   await apiClient.post("/auth/register", data);

@@ -42,7 +42,7 @@ export class AuthController {
     async googlecallback(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
         console.log('Google callback hit, user:', req.user);
         const response = await this.login(req.user as any, res);
-        return response;
+        res.redirect(process.env.GOOGLE_FRONTEND_REDIRECT_URL + '?token=' + (response as any).accessToken);
     }
 
     @UseGuards(JwtAuthGuard)
