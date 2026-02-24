@@ -1,6 +1,6 @@
 import { createContext, useCallback, useEffect, useState } from 'react';
 import type { AuthContextType, User, LoginDto, RegisterDto } from '../types/auth.types';
-import { loginApi, registerApi, logoutApi, getMeApi } from '../api/auth.api';
+import { loginApi, registerApi, logoutApi, getMeApi, loginWithGoogleApi } from '../api/auth.api';
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -43,6 +43,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
+  const loginWithGoogle = useCallback(async (token: string) => {
+    try {
+      await loginWithGoogleApi(token);
+      const userData = await getMeApi();
+      setUser(userData);
+      setIsAuthenticated(true);
+    } catch (error) {
+      console.error('Google login failed:', error);
+      throw error;
+    }
+  }, []);
+
   const register = useCallback(async (data: RegisterDto) => {
     try {
       await registerApi(data);
@@ -71,7 +83,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [checkAuth]);
 
   return (
-    <AuthContext.Provider value={{ user, loading, isAuthenticated, login, register, logout, checkAuth }}>
+    <AuthContext.Provider value={{ user, loading, isAuthenticated, login, register, logout, checkAuth, loginWithGoogle }}>
       {children}
     </AuthContext.Provider>
   );

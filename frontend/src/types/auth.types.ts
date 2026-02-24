@@ -29,4 +29,5 @@ export interface AuthContextType {
   register: (data: RegisterDto) => Promise<void>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
+  googleLogin: (token: string) => Promise<void>;
 }
