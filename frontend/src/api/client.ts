@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const baseURL = import.meta.env.VITE_BACK_END_URL || 'http://localhost:3000';
-console.log('API Client baseURL:', baseURL);
 
 export const apiClient = axios.create({
     baseURL,
@@ -10,7 +9,6 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.response.use(
   (response) => {
-    console.log('API Response:', response.config.url, response.status, response.data);
     return response;
   },
   (error) => {
@@ -30,6 +28,5 @@ apiClient.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`;
   }
 
-  console.log('API Request:', config.url, 'Headers:', config.headers);
   return config;
 });

@@ -160,7 +160,6 @@ async createTokens(id: number , res: Response)
 			throw new UnauthorizedException('Invalid credentials');
 		}
 		const storedPassword:string = user.passwordHash;
-		console.log('Stored password hash:', storedPassword);
 		let ismatch:boolean;
 		if (dto.password){
 			ismatch =  await argon2.verify(storedPassword, dto.password);

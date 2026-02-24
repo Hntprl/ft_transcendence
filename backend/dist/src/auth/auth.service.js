@@ -153,7 +153,6 @@ let AuthService = class AuthService {
             throw new common_1.UnauthorizedException('Invalid credentials');
         }
         const storedPassword = user.passwordHash;
-        console.log('Stored password hash:', storedPassword);
         let ismatch;
         if (dto.password) {
             ismatch = await argon2.verify(storedPassword, dto.password);

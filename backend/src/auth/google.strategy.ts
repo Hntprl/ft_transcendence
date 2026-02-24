@@ -12,7 +12,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(cfg: ConfigService, private authService: AuthService) {
     const googleCfg = googleOAuthConfig(cfg);
 
-    console.log(googleCfg.callbackURL);
     super({
       clientID: googleCfg.clientID,
       clientSecret: googleCfg.clientSecret,
@@ -23,7 +22,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 
     async validate(accessToken: string, refreshToken: string, profile: any, done: Function) {
 
-        // console.log('Google profile:', profile);
         try {
             const user = await this.authService.validateUserByGoogle(profile);
             done(null, user);

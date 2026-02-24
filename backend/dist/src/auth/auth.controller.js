@@ -39,7 +39,6 @@ let AuthController = class AuthController {
     async googlelogin() {
     }
     async googlecallback(req, res) {
-        console.log('Google callback hit, user:', req.user);
         const response = await this.login(req.user, res);
         res.redirect(process.env.GOOGLE_FRONTEND_REDIRECT_URL + '?token=' + response.accessToken);
     }
@@ -76,7 +75,7 @@ __decorate([
 ], AuthController.prototype, "refresh", null);
 __decorate([
     (0, common_1.UseGuards)(google_guards_guard_1.GoogleAuthGuard),
-    (0, common_1.Get)('google/login'),
+    (0, common_1.Get)('google'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)

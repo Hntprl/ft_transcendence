@@ -32,7 +32,7 @@ export class AuthController {
     }
 
     @UseGuards(GoogleAuthGuard)
-     @Get('google/login')
+     @Get('google')
     async googlelogin() {
         // This route will be handled by the GoogleStrategy
     }
@@ -40,7 +40,6 @@ export class AuthController {
     @UseGuards(GoogleAuthGuard)
      @Get('google/callback')
     async googlecallback(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-        console.log('Google callback hit, user:', req.user);
         const response = await this.login(req.user as any, res);
         res.redirect(process.env.GOOGLE_FRONTEND_REDIRECT_URL + '?token=' + (response as any).accessToken);
     }
