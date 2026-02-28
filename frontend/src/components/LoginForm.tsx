@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export const LoginForm = () => {
   const { login } = useAuth();
@@ -18,10 +19,15 @@ export const LoginForm = () => {
     try {
       await login({ email, password });
       navigate('/dashboard');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Full error:', err);
-      console.error('Error response:', err.response);
-      const errorMsg = err.response?.data?.message || err.message || 'Login failed';
+      let errorMsg = 'Login failed';
+      if (axios.isAxiosError(err)) {
+        console.error('Error response:', err.response);
+        errorMsg = err.response?.data?.message || err.message || errorMsg;
+      } else if (err instanceof Error) {
+        errorMsg = err.message;
+      }
       setError(errorMsg);
     } finally {
       setLoading(false);

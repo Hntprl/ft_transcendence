@@ -8,14 +8,14 @@ const storeAccessToken = (token?: string) => {
 
 export const loginApi = async (data: LoginDto) => {
   const res = await apiClient.post<AuthResponse>("/auth/login", data);
-  const token = (res.data as any).accessToken ?? (res.data as any).access_token;
+  const token = res.data.accessToken ?? res.data.access_token;
   storeAccessToken(token);
   return res.data;
 };
 
 export const loginWithGoogleApi = async (token: string) => {
   const res = await apiClient.post<AuthResponse>("/auth/google", { token });
-  const accessToken = (res.data as any).accessToken ?? (res.data as any).access_token;
+  const accessToken = res.data.accessToken ?? res.data.access_token;
   storeAccessToken(accessToken);
   return res.data;
 }
@@ -29,7 +29,7 @@ export const registerApi = async (data: RegisterDto) => {
 
 export const refreshApi = async () => {
   const res = await apiClient.post<AuthResponse>("/auth/refresh");
-  const token = (res.data as any).accessToken ?? (res.data as any).access_token;
+  const token = res.data.accessToken ?? res.data.access_token;
   storeAccessToken(token);
   return res.data;
 };

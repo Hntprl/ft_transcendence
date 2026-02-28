@@ -2,6 +2,7 @@ import { createContext, useCallback, useEffect, useState } from 'react';
 import type { AuthContextType, User, LoginDto, RegisterDto } from '../types/auth.types';
 import { loginApi, registerApi, logoutApi, getMeApi, loginWithGoogleApi } from '../api/auth.api';
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {

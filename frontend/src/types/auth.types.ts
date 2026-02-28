@@ -11,7 +11,8 @@ export interface RegisterDto {
 }
 
 export interface AuthResponse {
-  accessToken: string;
+  accessToken?: string;
+  access_token?: string;
 }
 
 export interface User {
@@ -29,5 +30,5 @@ export interface AuthContextType {
   register: (data: RegisterDto) => Promise<void>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
-  googleLogin: (token: string) => Promise<void>;
+  loginWithGoogle: (token: string) => Promise<void>;
 }

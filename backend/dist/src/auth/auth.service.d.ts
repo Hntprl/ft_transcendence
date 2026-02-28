@@ -12,16 +12,16 @@ export declare class AuthService {
     constructor(prisma: PrismaService, jwt: JwtService, cfg: ConfigService);
     hashPassword(password: string): Promise<string>;
     saveNewUser(userData: Prisma.UserCreateInput): Promise<{
+        id: number;
         email: string;
         firstName: string;
         lastName: string;
-        id: number;
     }>;
     registerUser(dto: CreateUserDto): Promise<{
+        id: number;
         email: string;
         firstName: string;
         lastName: string;
-        id: number;
     }>;
     refresh(refreshToken: string, res: Response): Promise<{
         accessToken: string;
@@ -40,10 +40,9 @@ export declare class AuthService {
         ok: boolean;
     }>;
     validateUserByGoogle(profile: any): Promise<{
+        id: number;
         email: string;
-        googleId: string | null;
         passwordHash: string | null;
-        refreshTokenHash: string | null;
         firstName: string;
         lastName: string;
         avatarUrl: string | null;
@@ -53,6 +52,7 @@ export declare class AuthService {
         lastLoginAt: Date | null;
         createdAt: Date;
         updatedAt: Date;
-        id: number;
+        googleId: string | null;
+        refreshTokenHash: string | null;
     }>;
 }
