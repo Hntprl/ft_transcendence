@@ -39,8 +39,11 @@ let AuthController = class AuthController {
     async googlelogin() {
     }
     async googlecallback(req, res) {
-        const response = await this.login(req.user, res);
-        res.redirect(process.env.GOOGLE_FRONTEND_REDIRECT_URL + '?token=' + response.accessToken);
+        const user = req.user;
+        const response = await this.authService.loginUserById(user.id, res);
+        res.redirect(process.env.GOOGLE_FRONTEND_REDIRECT_URL +
+            '?token=' +
+            response.accessToken);
     }
     me(req) {
         return req.user;

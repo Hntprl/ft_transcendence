@@ -4,9 +4,8 @@ import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
-
   const app = await NestFactory.create(AppModule);
-  
+
   // Enable CORS
   app.enableCors({
     origin: 'http://localhost:5173',
@@ -14,20 +13,22 @@ async function bootstrap() {
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
-  
+
   app.use(cookieParser());
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    transform: true,
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
   await app.listen(process.env.PORT ?? 3000);
 }
 
-
 // Enable global validation pipe which will validate all incoming requests
 // based on the DTOs defined in the application.
 
-
-bootstrap();
+bootstrap().catch((err) => {
+  console.error('Error starting server', err);
+});

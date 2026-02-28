@@ -21,13 +21,15 @@ let AuthModule = class AuthModule {
 exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
-        imports: [config_1.ConfigModule, passport_1.PassportModule,
+        imports: [
+            config_1.ConfigModule,
+            passport_1.PassportModule,
             jwt_1.JwtModule.registerAsync({
                 imports: [config_1.ConfigModule],
                 inject: [config_1.ConfigService],
                 useFactory: (cfg) => ({
                     secret: cfg.get('JWT_ACCESS_SECRET'),
-                    signOptions: { expiresIn: cfg.get('JWT_ACCESS_EXPIRES') || '15m' }
+                    signOptions: { expiresIn: cfg.get('JWT_ACCESS_EXPIRES') || '15m' },
                 }),
             }),
         ],

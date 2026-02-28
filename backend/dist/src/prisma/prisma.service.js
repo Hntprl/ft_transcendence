@@ -22,7 +22,6 @@ let PrismaService = class PrismaService extends client_1.PrismaClient {
         const pool = new pg_1.Pool({ connectionString: url });
         const adapter = new adapter_pg_1.PrismaPg(pool);
         super({ adapter });
-        const AuthDB = new client_1.PrismaClient({ adapter });
     }
     async onModuleInit() {
         await this.$connect();

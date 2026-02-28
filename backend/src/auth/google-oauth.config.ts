@@ -1,4 +1,4 @@
-import { ConfigService } from '@nestjs/config'
+import { ConfigService } from '@nestjs/config';
 
 export const googleOAuthConfig = (cfg: ConfigService) => ({
   clientID: cfg.get<string>('GOOGLE_CLIENT_ID')!,
@@ -6,4 +6,3 @@ export const googleOAuthConfig = (cfg: ConfigService) => ({
   callbackURL: cfg.get<string>('GOOGLE_CALLBACK_URL')!,
   scope: ['email', 'profile'],
 });
-

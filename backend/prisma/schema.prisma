@@ -9,8 +9,9 @@ datasource db {
 
 model User {
   id               Int       @id @default(autoincrement())
+  googleId         String?   @unique
   email            String    @unique
-  passwordHash     String
+  passwordHash     String?
   refreshTokenHash String?
   firstName        String
   lastName         String

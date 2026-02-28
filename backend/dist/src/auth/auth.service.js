@@ -58,9 +58,6 @@ let AuthService = class AuthService {
         this.cfg = cfg;
     }
     hashPassword(password) {
-        if (!password) {
-            return Promise.resolve('GOOGLE_AUTH');
-        }
         return argon2.hash(password);
     }
     async saveNewUser(userData) {
@@ -144,27 +141,25 @@ let AuthService = class AuthService {
         });
         return { accessToken };
     }
+    async loginUserById(userId, res) {
+        return this.createTokens(userId, res);
+    }
     async loginUser(dto, res) {
         const user = await this.prisma.user.findUnique({
             where: { email: dto.email },
-            select: { passwordHash: true, id: true }
+            select: { passwordHash: true, id: true, googleId: true },
         });
         if (!user) {
             throw new common_1.UnauthorizedException('Invalid credentials');
         }
-        const storedPassword = user.passwordHash;
-        let ismatch;
-        if (dto.password) {
-            ismatch = await argon2.verify(storedPassword, dto.password);
+        if (!user.passwordHash) {
+            throw new common_1.UnauthorizedException('Use Google login');
         }
-        else {
-            ismatch = true;
-        }
-        if (ismatch) {
-            return await this.createTokens(user.id, res);
-        }
-        else
+        const ismatch = await argon2.verify(user.passwordHash, dto.password);
+        if (!ismatch) {
             throw new common_1.UnauthorizedException('Invalid credentials');
+        }
+        return this.createTokens(user.id, res);
     }
     async logout(id, res) {
         await this.prisma.user.update({
@@ -174,20 +169,32 @@ let AuthService = class AuthService {
         res.clearCookie('refreshToken', { path: '/auth/refresh' });
         return { ok: true };
     }
-    async validateUserByGoogle(googleUser) {
-        const user = await this.prisma.user.findUnique({
-            where: { email: googleUser.emails[0].value },
-            select: { id: true, email: true, firstName: true, lastName: true },
+    async validateUserByGoogle(profile) {
+        const email = profile.emails?.[0]?.value;
+        if (!email)
+            throw new Error('Google account has no email');
+        const googleId = profile.id;
+        let user = await this.prisma.user.findUnique({
+            where: { email },
         });
-        if (user)
+        if (user) {
+            if (!user.googleId) {
+                user = await this.prisma.user.update({
+                    where: { id: user.id },
+                    data: { googleId },
+                });
+            }
             return user;
-        const newUserData = {
-            email: googleUser.emails[0].value,
-            firstName: googleUser.name?.givenName || '',
-            lastName: googleUser.name?.familyName || '',
-            passwordHash: 'GOOGLE_AUTH',
-        };
-        return this.saveNewUser(newUserData);
+        }
+        return this.prisma.user.create({
+            data: {
+                email,
+                firstName: profile.name?.givenName || '',
+                lastName: profile.name?.familyName || '',
+                googleId,
+                passwordHash: null,
+            },
+        });
     }
 };
 exports.AuthService = AuthService;

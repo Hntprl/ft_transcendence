@@ -9,14 +9,15 @@ import { JwtStrategy } from './jwt.strategy';
 import { GoogleStrategy } from './google.strategy';
 
 @Module({
-  imports: [ConfigModule, PassportModule,
-    JwtModule.registerAsync(
-    {
+  imports: [
+    ConfigModule,
+    PassportModule,
+    JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (cfg : ConfigService) => ({
+      useFactory: (cfg: ConfigService) => ({
         secret: cfg.get<string>('JWT_ACCESS_SECRET'),
-        signOptions: {expiresIn: cfg.get('JWT_ACCESS_EXPIRES') || '15m'}
+        signOptions: { expiresIn: cfg.get('JWT_ACCESS_EXPIRES') || '15m' },
       }),
     }),
   ],
