@@ -10,6 +10,12 @@ export declare class AuthService {
     private readonly jwt;
     private readonly cfg;
     constructor(prisma: PrismaService, jwt: JwtService, cfg: ConfigService);
+    getUserById(id: number): Promise<{
+        id: number;
+        email: string;
+        firstName: string;
+        lastName: string;
+    } | null>;
     hashPassword(password: string): Promise<string>;
     saveNewUser(userData: Prisma.UserCreateInput): Promise<{
         id: number;
@@ -54,5 +60,7 @@ export declare class AuthService {
         updatedAt: Date;
         googleId: string | null;
         refreshTokenHash: string | null;
+        twoFactorAuthSecret: string | null;
+        isTwoFactorAuthEnabled: boolean;
     }>;
 }

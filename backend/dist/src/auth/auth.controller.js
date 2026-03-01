@@ -46,7 +46,7 @@ let AuthController = class AuthController {
             response.accessToken);
     }
     me(req) {
-        return req.user;
+        return this.authService.getUserById(req.user.id);
     }
     logout(req, res) {
         return this.authService.logout(req.user.id, res);

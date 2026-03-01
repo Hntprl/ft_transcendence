@@ -57,6 +57,14 @@ let AuthService = class AuthService {
         this.jwt = jwt;
         this.cfg = cfg;
     }
+    async getUserById(id) {
+        const user = await this.prisma.user.findUnique({
+            where: { id },
+            select: { id: true, email: true, firstName: true, lastName: true },
+        });
+        console.log('getUserById', { id, user });
+        return user;
+    }
     hashPassword(password) {
         return argon2.hash(password);
     }

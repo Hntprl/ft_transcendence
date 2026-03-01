@@ -21,6 +21,14 @@ export class AuthService {
     private readonly cfg: ConfigService,
   ) {}
 
+  async getUserById(id: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: { id: true, email: true, firstName: true, lastName: true },
+    });
+    return user;
+  }
+
   // register user
 
   hashPassword(password: string): Promise<string> {
@@ -105,7 +113,7 @@ export class AuthService {
     } as any);
 
     res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
+      httpOnly: true, // makes it inaccessible to JavaScript
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/auth/refresh',
